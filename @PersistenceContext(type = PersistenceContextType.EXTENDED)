@@ -1,0 +1,30 @@
+   public class A {
+      @PersistenceContext(type = PersistenceContextType.EXTENDED)
+      private EntityManager entityManager;
+   }
+    
+   public class B {
+      private EntityManager entityManager;
+   }
+    
+    PersistenceContextType.EXTENDED 옵션을 사용 하게 되면 @Transaction을 만나지 않으면 DB에 저장이 되지 않는다.
+    저장 되지는 않았지만 PersistenceContext 영역에서는 계속 남아 있는다.
+    
+    즉, A 클래스에는 DB에 반영 되지 않은 entity가 PersistenceContext에 남아 있게 된다.
+    
+    TEST1
+      1. A 클래스에 사과를 저장. - 성공
+      2. A 클래스에 사과를 저장. - 실패 (중복에러)
+      3. B 클래스에 사과를 저장. - 성공(entityMnager가 다르기 때문에 저장됨.)
+    TEST2
+      1. B 클래스에 사과를 저장. - 성공
+      2. A 클래스에 사과를 저장. - 성공
+      3. A 클래스에 사과를 저장. - 실패 (중복에러) 
+      
+    TEST3
+      1. B 클래스에 사과를 저장. - 성공
+      2. A 클래스에 사과를 조회
+      3. A 클래스에 사과를 저장. - 실패 (중복에러) 
+    
+    결론 : 쓸일이 없을거 같다.
+    출처 : https://www.baeldung.com/jpa-hibernate-persistence-context
