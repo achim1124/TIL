@@ -16,3 +16,5 @@ spring:
     open-in-view: true    
     
 ![image](https://user-images.githubusercontent.com/18023672/199469598-9e4034e2-2bf1-4386-ba98-62e3767dc840.png)
+
+출처 : https://ykh6242.tistory.com/entry/JPA-OSIVOpen-Session-In-View%EC%99%80-%EC%84%B1%EB%8A%A5-%EC%B5%9C%EC%A0%81%ED%99%94
