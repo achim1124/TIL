@@ -1,0 +1,56 @@
+클래스 리터럴 :  String.class, Integer.class 등을 말하며, String.class의 타입은 Class<String>, Integer.class의 타입은 Class<Integer>다.
+
+타입 토큰 : 컴파일타임 타입 정보와 런타임 타입 정보를 알아내기 위해 메서드들이 주고받는 클래스 리터럴을 타입토큰이라한다. 
+
+ 
+슈퍼 타입토큰
+
+위의 type eraser내용에서 보듯이 List<String>.class와 같은 클래스 리터럴은 존재 하지 않는다
+
+이런 제네릭 정보가 지워지는 문제 때문에 Super type token 기법이 생겨났다.
+ 
+
+Super type token은 수퍼(상위)타입을 토큰으로 사용하겠다는 의미이다. 
+
+무슨말인가?
+
+ 
+제네릭 정보가 컴파일시 런타임시 다 지워지지만 제네릭 정보를 런타임시 가져올 방법이 존재한다. 제네릭 클래스를 정의한 후에 그 제네릭 클래스를 상속받으면 런타임시에는 제네릭 정보를 가져올 수 있다.
+ 
+
+슈퍼 타입을 토큰으로 사용한다는 의미이다. 말이 어렵지만 예제를 통해 풀어보자
+
+List<String>.class 리터럴의 토큰 타입 Class<List<String>> 을 어떻게 구할까
+
+
+바로 Class의 메소드의 public Type getGenericSuperclass() 메소드를 통해 구할수 있다.
+
+
+getGenericSuperclass() 이용 하여 바로 위의 슈퍼 클래스의 타입을 반환한다.
+
+상위타입은 제네릭의 타입토큰 정보가 존재한다.
+
+
+public abstract class TypeReference<T> {
+
+    private Type type;
+
+    protected TypeReference() {
+        Type superClassType = getClass().getGenericSuperclass();
+        if (!(superClassType instanceof ParameterizedType)) {  // sanity check
+            throw new IllegalArgumentException("TypeReference는 항상 실제 타입 파라미터 정보와 함께 생성되어야 합니다.");
+        }
+        this.type = ((ParameterizedType)superClassType).getActualTypeArguments()[0];
+    }
+
+    public Type getType() {
+        return type;
+    }
+}
+
+public void main(String[] args){
+   TypeReference<List<String>> ref = new TypeReference<List<String>>(){};//상속받는다
+    //바로위의 상위 타입에 대한 제네릭 타입은 존재한다.
+   Type type = ref.getType(); // List<String>.class의 타입정보이다.  
+
+}
