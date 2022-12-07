@@ -54,3 +54,15 @@ public void main(String[] args){
    Type type = ref.getType(); // List<String>.class의 타입정보이다.  
 
 }
+
+
+@SuppressWarnings("unchecked")
+private Class<T> getGenericTypeClass() {
+    try {
+        String className = ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0].getTypeName();
+        Class<?> clazz = Class.forName(className);
+        return (Class<T>) clazz;
+    } catch (Exception e) {
+        throw new IllegalStateException("Class is not parametrized with generic type!!! Please use extends <> ");
+    }
+} 
